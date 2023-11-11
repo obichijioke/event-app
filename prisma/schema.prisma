@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  userType      UserType  @default(USER)
+  events        Event[]   @relation("UserEvents")
+  sales         Sale[]
+  reviews       Review[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum UserType {
+  ADMIN
+  USER
+  ORGANIZER
+  MODERATOR
+}
+
+enum EventType {
+  ONLINE_EVENT
+  VENUE_EVENT
+  NOT_DECIDED
+}
+
+model Event {
+  id          Int       @id @default(autoincrement())
+  organizerId String
+  name        String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  location    String
+  category    String
+  eventType   EventType
+  organizer   User      @relation(name: "UserEvents", fields: [organizerId], references: [id])
+  tickets     Ticket[]
+  reviews     Review[]
+}
+
+model Ticket {
+  id           Int     @id @default(autoincrement())
+  eventId      Int
+  price        Float
+  seatNumber   String?
+  type         String
+  availability String
+  event        Event   @relation(fields: [eventId], references: [id])
+  sales        Sale[]
+}
+
+model Sale {
+  id           Int      @id @default(autoincrement())
+  ticketId     Int
+  buyerId      String
+  purchaseDate DateTime
+  quantity     Int
+  totalPrice   Float
+  ticket       Ticket   @relation(fields: [ticketId], references: [id])
+  buyer        User     @relation(fields: [buyerId], references: [id])
+  payment      Payment?
+}
+
+model Payment {
+  id          Int      @id @default(autoincrement())
+  saleId      Int      @unique
+  method      String
+  status      String
+  paymentDate DateTime
+  sale        Sale     @relation(fields: [saleId], references: [id])
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  eventId    Int
+  userId     String
+  rating     Int
+  comment    String?
+  reviewDate DateTime
+  event      Event    @relation(fields: [eventId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
