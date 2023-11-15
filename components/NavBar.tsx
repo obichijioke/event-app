@@ -55,65 +55,74 @@ const NavBar = () => {
               <Link href="#">Sign Up</Link>
             </li>
           </ul>
-          <Sheet>
-            <SheetTrigger>
-              <Menu className="block lg:hidden" />
-            </SheetTrigger>
-            <SheetContent>
-              <div className="p-5">
-                <div className="flex justify-center">
-                  <div className="my-10 flex flex-col justify-center items-center gap-2">
-                    <Avatar>
-                      <AvatarImage src="https://github.com/shadcn.png" />
-                      <AvatarFallback>CO</AvatarFallback>
-                    </Avatar>
-                    <p className="text-center">Chijioke Obi</p>
-                    <Button>
-                      <CalendarDays className="mr-2" />
-                      Create Event
-                    </Button>
-                  </div>
-                </div>
-                <ul className="flex flex-col gap-4 text-center mb-5">
-                  <li>
-                    <Link href="#">Home</Link>
-                  </li>
-                  <li>
-                    <Link href="#">About</Link>
-                  </li>
-                  <li>
-                    <Link href="#">Services</Link>
-                  </li>
-                  <li>
-                    <Link href="#">Contact</Link>
-                  </li>
-                </ul>
-                <Separator />
-                <div className="text-center flex flex-col gap-4 py-4">
-                  <Link href="#">My Profile</Link>
-                  <Link href="#">My Organisation</Link>
-                </div>
+          <div className="flex gap-3">
+            <section className="hidden md:block lg:hidden">
+              <Button>
+                <CalendarDays className="mr-2" />
+                Create Event
+              </Button>
+            </section>
 
-                <ul className="flex justify-center gap-3 my-3 items-center">
-                  <li>
-                    <Link href="#">Sign In</Link>
-                  </li>
-                  <li>
-                    <Link href="#">Sign Up</Link>
-                  </li>
-
-                  <li>
-                    <Link href="#">
+            <Sheet>
+              <SheetTrigger>
+                <Menu className="block lg:hidden" />
+              </SheetTrigger>
+              <SheetContent>
+                <div className="p-5">
+                  <div className="flex justify-center">
+                    <div className="my-10 flex flex-col justify-center items-center gap-2">
+                      <Avatar>
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarFallback>CO</AvatarFallback>
+                      </Avatar>
+                      <p className="text-center">Chijioke Obi</p>
                       <Button>
-                        <LogOut className="mr-2" />
-                        Logout
+                        <CalendarDays className="mr-2" />
+                        Create Event
                       </Button>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </SheetContent>
-          </Sheet>
+                    </div>
+                  </div>
+                  <ul className="flex flex-col gap-4 text-center mb-5">
+                    <li>
+                      <Link href="#">Home</Link>
+                    </li>
+                    <li>
+                      <Link href="#">About</Link>
+                    </li>
+                    <li>
+                      <Link href="#">Services</Link>
+                    </li>
+                    <li>
+                      <Link href="#">Contact</Link>
+                    </li>
+                  </ul>
+                  <Separator />
+                  <div className="text-center flex flex-col gap-4 py-4">
+                    <Link href="#">My Profile</Link>
+                    <Link href="#">My Organisation</Link>
+                  </div>
+
+                  <ul className="flex justify-center gap-3 my-3 items-center">
+                    <li>
+                      <Link href="#">Sign In</Link>
+                    </li>
+                    <li>
+                      <Link href="#">Sign Up</Link>
+                    </li>
+
+                    <li>
+                      <Link href="#">
+                        <Button>
+                          <LogOut className="mr-2" />
+                          Logout
+                        </Button>
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </div>
