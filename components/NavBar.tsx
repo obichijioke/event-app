@@ -16,7 +16,7 @@ import {
 
 const NavBar = () => {
   return (
-    <div className="w-full">
+    <div className="w-full shadow-md">
       <div className="flex px-5 justify-between items-center py-3 w-full max-w-[1400px] mx-auto">
         <p className="text-black text-xl">Logo</p>
         <ul className="lg:flex gap-4 lg:gap-5 hidden ">

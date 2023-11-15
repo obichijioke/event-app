@@ -1,11 +1,13 @@
 import Image from "next/image";
 import NavBar from "./../components/NavBar";
+import HeroSection from "@/components/home/HeroSection";
+import CategorySection from "@/components/home/CategorySection";
 
 export default function Home() {
   return (
-    <>
-      <NavBar />
-      <main className="w-full bg-slate-900 p-10 text-white">Main area</main>
-    </>
+    <main className="w-full">
+      <HeroSection />
+      <CategorySection />
+    </main>
   );
 }
