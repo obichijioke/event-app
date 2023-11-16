@@ -4,7 +4,7 @@ import EventCard from "../EventCard";
 const ExploreEvents = () => {
   return (
     <div className="w-full max-w-[1400px] mx-auto px-3">
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         <EventCard />
         <EventCard />
         <EventCard />
