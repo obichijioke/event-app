@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
+import ExploreEvents from "@/components/home/ExploreEvents";
 import {
   Select,
   SelectContent,
@@ -115,6 +116,7 @@ const EventsPage = () => {
           </div>
         </div>
       </section>
+      <ExploreEvents />
     </div>
   );
 };
