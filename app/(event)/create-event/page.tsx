@@ -58,6 +58,7 @@ const frameworks = [
 const CreateEventPage = () => {
   const { register, handleSubmit, control } = useForm();
   const [open, setOpen] = useState<boolean>(false);
+  const [countryOpen, countrySetOpen] = useState<boolean>(false);
   const [value, setValue] = useState("");
   const [date, setDate] = useState<Date>();
   return (
@@ -238,6 +239,138 @@ const CreateEventPage = () => {
               <SimpleMDE placeholder="Event description" {...field} />
             )}
           />
+        </div>
+        <div className="py-6">
+          <Label className="font-semibold text-gray-600" htmlFor="name">
+            Where is your event taking place? *
+          </Label>
+          <p className="text-xs text-gray-500 my-3">
+            Add a venue to your event to tell your attendees where to join the
+            event.
+          </p>
+          <div className="py-3">
+            <Label className="font-medium text-gray-600 pt-4" htmlFor="name">
+              Venue*
+            </Label>
+            <Input
+              {...register("venue")}
+              name="venue"
+              placeholder="Enter event venue"
+            />
+          </div>
+
+          <div className="flex gap-1 py-3">
+            <div className="w-1/2">
+              <Label className="font-medium text-gray-600" htmlFor="name">
+                Address line 1.*
+              </Label>
+              <Input
+                {...register("venue")}
+                name="venue"
+                placeholder="Enter event venue"
+              />
+            </div>
+            <div className="w-1/2">
+              <Label className="font-medium text-gray-600" htmlFor="name">
+                Address line 2.*
+              </Label>
+              <Input
+                {...register("venue")}
+                name="venue"
+                placeholder="Enter event venue"
+              />
+            </div>
+          </div>
+          <div className="flex gap-1 py-3">
+            <div className="w-1/2">
+              <Label className="font-medium text-gray-600" htmlFor="name">
+                Country*
+              </Label>
+              <Popover open={countryOpen} onOpenChange={countrySetOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full justify-between"
+                  >
+                    {value
+                      ? frameworks.find(
+                          (framework) => framework.value === value
+                        )?.label
+                      : "Select a category"}
+                    <ChevronsDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="lg:w-[250px] p-0">
+                  <Command className="w-full">
+                    <CommandInput placeholder="Search Category..." />
+                    <CommandEmpty>No Category found.</CommandEmpty>
+                    <CommandGroup>
+                      {frameworks.map((framework) => (
+                        <CommandItem
+                          key={framework.value}
+                          value={framework.value}
+                          className="w-full"
+                          onSelect={(currentValue) => {
+                            setValue(
+                              currentValue === value ? "" : currentValue
+                            );
+                            setOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              value === framework.value
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {framework.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="w-1/2">
+              <Label className="font-medium text-gray-600" htmlFor="name">
+                State.*
+              </Label>
+              <Input
+                {...register("venue")}
+                name="venue"
+                placeholder="Enter event venue"
+              />
+            </div>
+          </div>
+          <div className="flex gap-1 py-3">
+            <div className="w-1/2">
+              <Label className="font-medium text-gray-600" htmlFor="name">
+                City.*
+              </Label>
+              <Input
+                {...register("venue")}
+                name="venue"
+                placeholder="Enter event venue"
+              />
+            </div>
+            <div className="w-1/2">
+              <Label className="font-medium text-gray-600" htmlFor="name">
+                Zip/Post code.*
+              </Label>
+              <Input
+                {...register("venue")}
+                name="venue"
+                placeholder="Enter event venue"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center">
+          <Button className="px-6">Next</Button>
         </div>
       </form>
     </div>
