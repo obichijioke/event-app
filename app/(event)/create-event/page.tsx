@@ -1,0 +1,247 @@
+"use client";
+import { Separator } from "@/components/ui/separator";
+import { useForm, Controller } from "react-hook-form";
+import React, { useState } from "react";
+import { format } from "date-fns";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { Check, ChevronsDown, Calendar as CalendarIcon } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+const frameworks = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+];
+
+const CreateEventPage = () => {
+  const { register, handleSubmit, control } = useForm();
+  const [open, setOpen] = useState<boolean>(false);
+  const [value, setValue] = useState("");
+  const [date, setDate] = useState<Date>();
+  return (
+    <div className="w-full px-5 lg:w-[700px] mx-auto border border-gray-200 my-10 rounded-lg">
+      <h2 className="py-5 font-semibold">Details</h2>
+      <Separator />
+      <form
+        className="py-4"
+        onSubmit={handleSubmit((data) => console.log(data))}
+      >
+        <div className="py-6">
+          <Label className="font-semibold text-gray-600" htmlFor="name">
+            Give your event a name.*
+          </Label>
+          <p className="text-xs text-gray-500 my-3">
+            See how your name appears on the event page and a list of all places
+            where your event name will be used. Learn more
+          </p>
+          <Input
+            {...register("name")}
+            name="name"
+            placeholder="Enter event name here"
+          />
+        </div>
+        <Separator />
+        <div className="py-5">
+          <Label className="font-semibold text-gray-600" htmlFor="name">
+            Choose a category for your event.*
+          </Label>
+          <p className="text-xs text-gray-500 my-3">
+            Choosing relevant categories helps to improve the discoverability of
+            your event. Learn more
+          </p>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className="w-full justify-between py-6"
+              >
+                {value
+                  ? frameworks.find((framework) => framework.value === value)
+                      ?.label
+                  : "Select a category"}
+                <ChevronsDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="lg:w-[600px] p-0">
+              <Command className="w-full">
+                <CommandInput placeholder="Search Category..." />
+                <CommandEmpty>No Category found.</CommandEmpty>
+                <CommandGroup>
+                  {frameworks.map((framework) => (
+                    <CommandItem
+                      key={framework.value}
+                      value={framework.value}
+                      className="w-full"
+                      onSelect={(currentValue) => {
+                        setValue(currentValue === value ? "" : currentValue);
+                        setOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          value === framework.value
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      {framework.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+        <Separator />
+        <div className="py-6">
+          <Label className="font-semibold text-gray-600" htmlFor="name">
+            When is your event?*
+          </Label>
+          <p className="text-xs text-gray-500 my-3">
+            Tell your attendees when your event starts so they can get ready to
+            attend.
+          </p>
+          <div className="flex gap-1">
+            <div className="w-1/2">
+              <Label className="font-medium text-gray-600" htmlFor="name">
+                Event Date.*
+              </Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="w-1/2 flex gap-1">
+              <div className="w-1/2">
+                <Label className="font-medium text-gray-600" htmlFor="name">
+                  Time
+                </Label>
+                <Select className="full">
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Theme" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="light">Light</SelectItem>
+                    <SelectItem value="dark">Dark</SelectItem>
+                    <SelectItem value="system">System</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="w-1/2">
+                <Label className="font-medium text-gray-600" htmlFor="name">
+                  Duration
+                </Label>
+                <Select className="w-1/2">
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Hour" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="light">Light</SelectItem>
+                    <SelectItem value="dark">Dark</SelectItem>
+                    <SelectItem value="system">System</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Separator />
+        <div className="py-5">
+          <Label className="font-semibold text-gray-600" htmlFor="name">
+            Add a few images to your event banner.
+          </Label>
+          <p className="text-xs text-gray-500 my-3">
+            Upload colorful and vibrant images as the banner for your event! See
+            how beautiful images help your event details page. Learn more
+          </p>
+          <div className="w-full h-[200px] relative bg-slate-200 rounded-lg overflow-hidden border border-dashed border-gray-500">
+            <Button className="absolute right-2 top-2">Change Image</Button>
+          </div>
+        </div>
+        <Separator />
+        <div className="py-5">
+          <Label className="font-semibold text-gray-600" htmlFor="name">
+            Please describe your event.
+          </Label>
+          <p className="text-xs text-gray-500 my-3">
+            Write a few words below to describe your event and provide any extra
+            information such as schedules, itinerary or any special instructions
+            required to attend your event.
+          </p>
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <SimpleMDE placeholder="Event description" {...field} />
+            )}
+          />
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default CreateEventPage;
