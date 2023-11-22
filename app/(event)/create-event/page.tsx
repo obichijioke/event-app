@@ -180,7 +180,7 @@ const CreateEventPage = () => {
                 <Label className="font-medium text-gray-600" htmlFor="name">
                   Time
                 </Label>
-                <Select className="full">
+                <Select>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Theme" />
                   </SelectTrigger>
@@ -195,7 +195,7 @@ const CreateEventPage = () => {
                 <Label className="font-medium text-gray-600" htmlFor="name">
                   Duration
                 </Label>
-                <Select className="w-1/2">
+                <Select>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Hour" />
                   </SelectTrigger>

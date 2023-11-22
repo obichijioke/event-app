@@ -80,7 +80,7 @@ model Event {
   description String
   startDate   DateTime
   endDate     DateTime
-  location    String
+  location    Json
   category    String
   eventType   EventType
   organizer   User      @relation(name: "UserEvents", fields: [organizerId], references: [id])
