@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
+import { UploadDropzone } from "@/lib/uploadthing";
 import {
   Select,
   SelectContent,
@@ -218,6 +219,17 @@ const CreateEventPage = () => {
             Upload colorful and vibrant images as the banner for your event! See
             how beautiful images help your event details page. Learn more
           </p>
+          <UploadDropzone
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              console.log(`onClientUploadComplete`, res);
+              alert("Upload Completed");
+            }}
+            onUploadBegin={() => {
+              console.log("upload begin");
+            }}
+            className="bg-slate-800 ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300"
+          />
           <div className="w-full h-[200px] relative bg-slate-200 rounded-lg overflow-hidden border border-dashed border-gray-500">
             <Button className="absolute right-2 top-2">Change Image</Button>
           </div>
