@@ -56,12 +56,23 @@ const frameworks = [
   },
 ];
 
+interface ImageResponse {
+  key: string;
+  name: string;
+  serverData: {
+    uploadedBy: string;
+  };
+  size: number;
+  url: string;
+}
+
 const CreateEventPage = () => {
   const { register, handleSubmit, control } = useForm();
   const [open, setOpen] = useState<boolean>(false);
   const [countryOpen, countrySetOpen] = useState<boolean>(false);
   const [value, setValue] = useState("");
   const [date, setDate] = useState<Date>();
+  const [images, setImages] = useState<ImageResponse[]>([]);
   return (
     <div className="w-full px-5 lg:w-[700px] mx-auto border border-gray-200 my-10 rounded-lg">
       <h2 className="py-5 font-semibold">Details</h2>
@@ -153,6 +164,7 @@ const CreateEventPage = () => {
               <Label className="font-medium text-gray-600" htmlFor="name">
                 Event Date.*
               </Label>
+
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -223,15 +235,23 @@ const CreateEventPage = () => {
             endpoint="imageUploader"
             onClientUploadComplete={(res) => {
               console.log(`onClientUploadComplete`, res);
-              alert("Upload Completed");
+              setImages((prev) => [...prev, ...res]);
             }}
             onUploadBegin={() => {
               console.log("upload begin");
             }}
             className="bg-slate-800 ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300"
           />
-          <div className="w-full h-[200px] relative bg-slate-200 rounded-lg overflow-hidden border border-dashed border-gray-500">
-            <Button className="absolute right-2 top-2">Change Image</Button>
+          <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 overflow-hidden p-2 gap-2">
+            {images.length > 0 &&
+              images.map((image) => (
+                <img
+                  key={image.key}
+                  className="w-full rounded-lg my-2 h-[120px] object-cover"
+                  src={image.url}
+                  alt={image.key}
+                />
+              ))}
           </div>
         </div>
         <Separator />
@@ -271,25 +291,15 @@ const CreateEventPage = () => {
             />
           </div>
 
-          <div className="flex gap-1 py-3">
-            <div className="w-1/2">
+          <div className="py-3">
+            <div className="w-full">
               <Label className="font-medium text-gray-600" htmlFor="name">
-                Address line 1.*
+                Address.*
               </Label>
               <Input
-                {...register("venue")}
-                name="venue"
-                placeholder="Enter event venue"
-              />
-            </div>
-            <div className="w-1/2">
-              <Label className="font-medium text-gray-600" htmlFor="name">
-                Address line 2.*
-              </Label>
-              <Input
-                {...register("venue")}
-                name="venue"
-                placeholder="Enter event venue"
+                {...register("address")}
+                name="address"
+                placeholder="Enter event Address"
               />
             </div>
           </div>
@@ -352,9 +362,9 @@ const CreateEventPage = () => {
                 State.*
               </Label>
               <Input
-                {...register("venue")}
-                name="venue"
-                placeholder="Enter event venue"
+                {...register("state")}
+                name="state"
+                placeholder="Enter event state"
               />
             </div>
           </div>
@@ -364,19 +374,19 @@ const CreateEventPage = () => {
                 City.*
               </Label>
               <Input
-                {...register("venue")}
-                name="venue"
-                placeholder="Enter event venue"
+                {...register("city")}
+                name="city"
+                placeholder="Enter event city"
               />
             </div>
             <div className="w-1/2">
               <Label className="font-medium text-gray-600" htmlFor="name">
-                Zip/Post code.*
+                Zip/Postcode.*
               </Label>
               <Input
-                {...register("venue")}
-                name="venue"
-                placeholder="Enter event venue"
+                {...register("postalCode")}
+                name="postalCode"
+                placeholder="Enter postcode"
               />
             </div>
           </div>
