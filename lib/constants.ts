@@ -354,7 +354,7 @@ export const timeIntervals = [
 export const duration = [
   { label: "1hr", value: "1hr" },
   { label: "2hr", value: "2hr" },
-  { Label: "3hr", value: "3hr" },
+  { label: "3hr", value: "3hr" },
   { label: "4hr", value: "4hr" },
   { label: "5hr", value: "5hr" },
   { label: "6hr", value: "6hr" },

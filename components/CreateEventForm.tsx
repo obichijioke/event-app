@@ -10,7 +10,9 @@ import { eventSchema } from "@/lib/zodSchemas";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import SimpleMDE from "react-simplemde-editor";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import "easymde/dist/easymde.min.css";
+import { timeIntervals, duration, countries } from "@/lib/constants";
 import { UploadDropzone } from "@/lib/uploadthing";
 import {
   Select,
@@ -57,6 +59,18 @@ const FormSchema = z.object({
   }),
 });
 
+const languages = [
+  { label: "English", value: "en" },
+  { label: "French", value: "fr" },
+  { label: "German", value: "de" },
+  { label: "Spanish", value: "es" },
+  { label: "Portuguese", value: "pt" },
+  { label: "Russian", value: "ru" },
+  { label: "Japanese", value: "ja" },
+  { label: "Korean", value: "ko" },
+  { label: "Chinese", value: "zh" },
+];
+
 interface ImageResponse {
   key: string;
   name: string;
@@ -78,37 +92,199 @@ export default function CreateEventForm() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full py-5">
       <h2 className="py-5 font-semibold">Details</h2>
       <Separator />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="py-6">name</div>
+          <div className="pt-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Give you event a name* </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter event name" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    See how your name appears on the event page and a list of
+                    all places where your event name will be used.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <Separator />
-          <div className="py-5">category</div>
+          <div>
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Choose a category for your event.*</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {languages &&
+                        languages.map((category) => (
+                          <SelectItem
+                            key={category.value}
+                            value={category.value}
+                          >
+                            {category.label}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Choosing relevant categories helps to improve the
+                    discoverability of your event.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <Separator />
-          <div className="py-6">
+          <div>
             <p className="font-semibold text-gray-600">When is your event?*</p>
             <p className="text-xs text-gray-500 my-3">
               Tell your attendees when your event starts so they can get ready
               to attend.
             </p>
             <div className="flex gap-1">
-              <div className="w-1/2">date</div>
+              <div className="w-1/2 pt-[10px]">
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Event Date.*</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "px-2 text-left font-normal mt-2",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) =>
+                              date > new Date() || date < new Date("1900-01-01")
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <div className="w-1/2 flex gap-1">
-                <div className="w-1/2">time</div>
-                <div className="w-1/2">duration</div>
+                <div className="w-1/2">
+                  <FormField
+                    control={form.control}
+                    name="time"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Time</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="text-muted-foreground">
+                              <SelectValue placeholder="Select time" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {timeIntervals &&
+                              timeIntervals.map((interval) => (
+                                <SelectItem
+                                  key={interval.value}
+                                  value={interval.value}
+                                >
+                                  {interval.label}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="w-1/2">
+                  <FormField
+                    control={form.control}
+                    name="duration"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Duration</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="text-muted-foreground">
+                              <SelectValue placeholder="Select duration" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {duration &&
+                              duration.map((duration) => (
+                                <SelectItem
+                                  key={duration.value}
+                                  value={duration.value}
+                                >
+                                  {duration.label}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
             </div>
           </div>
           <Separator />
-          <div className="py-5">
+          <div>
             <p className="font-semibold text-gray-600">
               Add a few images to your event banner.
             </p>
             <p className="text-xs text-gray-500 my-3">
               Upload colorful and vibrant images as the banner for your event!
-              See how beautiful images help your event details page. Learn more
+              See how beautiful images help your event details page.
             </p>
             <UploadDropzone
               endpoint="imageUploader"
@@ -134,7 +310,7 @@ export default function CreateEventForm() {
             </div>
           </div>
           <Separator />
-          <div className="py-5">
+          <div>
             <p className="font-semibold text-gray-600">
               Please describe your event.
             </p>
@@ -151,7 +327,7 @@ export default function CreateEventForm() {
               )}
             />
           </div>
-          <div className="py-6">
+          <div>
             <p className="font-semibold text-gray-600">
               Where is your event taking place? *
             </p>
@@ -159,18 +335,154 @@ export default function CreateEventForm() {
               Add a venue to your event to tell your attendees where to join the
               event.
             </p>
-            <div className="py-3">venue</div>
+            <div className="py-3">
+              <FormField
+                control={form.control}
+                name="venue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Venue</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter event venue" {...field} />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="py-3">
-              <div className="w-full">address</div>
+              <div className="w-full">
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address line</FormLabel>
+                      <FormControl>
+                        <Input placeholder="address" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
             <div className="flex gap-1 py-3">
-              <div className="w-1/2">country</div>
-              <div className="w-1/2">state</div>
+              <div className="w-1/2">
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col pt-[10px]">
+                      <FormLabel>Country</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                " justify-between",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? countries.find(
+                                    (country) => country.value === field.value
+                                  )?.label
+                                : "Select country"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="p-0">
+                          <Command>
+                            <CommandInput placeholder="Search country..." />
+                            <CommandEmpty>No country found.</CommandEmpty>
+
+                            <CommandGroup>
+                              <ScrollArea className="h-72 w-full rounded-md border">
+                                {countries.map((country) => (
+                                  <CommandItem
+                                    value={country.label}
+                                    key={country.value}
+                                    onSelect={() => {
+                                      form.setValue("category", country.value);
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        country.value === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    {country.label}
+                                  </CommandItem>
+                                ))}
+                              </ScrollArea>
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="w-1/2">
+                <FormField
+                  control={form.control}
+                  name="state"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>State</FormLabel>
+                      <FormControl>
+                        <Input placeholder="state" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
             <div className="flex gap-1 py-3">
-              <div className="w-1/2">city</div>
-              <div className="w-1/2">postcode</div>
+              <div className="w-1/2">
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>City</FormLabel>
+                      <FormControl>
+                        <Input placeholder="city" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="w-1/2">
+                <FormField
+                  control={form.control}
+                  name="postcode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Postcode</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Postcode" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </div>
           <div className="flex justify-center">
