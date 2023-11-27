@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalendarDays, Menu, LogOut } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { useSession } from "next-auth/react";
 
 import {
   Sheet,
@@ -15,6 +16,8 @@ import {
 } from "@/components/ui/sheet";
 
 const NavBar = () => {
+  const { status, data: session } = useSession();
+
   return (
     <div className="w-full shadow-md">
       <div className="flex px-5 justify-between items-center py-3 w-full max-w-[1400px] mx-auto">
@@ -35,33 +38,42 @@ const NavBar = () => {
         </ul>
         <div className="flex">
           <ul className="hidden lg:flex justify-end items-center gap-3">
-            <li>
-              <Button>
-                {" "}
-                <CalendarDays className="mr-2" />
-                Create Event
-              </Button>
-            </li>
-            <li>
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CO</AvatarFallback>
-              </Avatar>
-            </li>
-            <li>
-              <Link href="#">Sign In</Link>
-            </li>
-            <li>
-              <Link href="#">Sign Up</Link>
-            </li>
+            {status === "authenticated" && (
+              <li>
+                <Button>
+                  <CalendarDays className="mr-2" />
+                  Create Event
+                </Button>
+              </li>
+            )}
+            {status === "authenticated" && (
+              <li>
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CO</AvatarFallback>
+                </Avatar>
+              </li>
+            )}
+            {status === "unauthenticated" && (
+              <li>
+                <Link href="#">Sign In</Link>
+              </li>
+            )}
+            {status === "unauthenticated" && (
+              <li>
+                <Link href="#">Sign Up</Link>
+              </li>
+            )}
           </ul>
           <div className="flex gap-3">
-            <section className="hidden md:block lg:hidden">
-              <Button>
-                <CalendarDays className="mr-2" />
-                Create Event
-              </Button>
-            </section>
+            {status === "authenticated" && (
+              <section className="hidden md:block lg:hidden">
+                <Button>
+                  <CalendarDays className="mr-2" />
+                  Create Event
+                </Button>
+              </section>
+            )}
 
             <Sheet>
               <SheetTrigger>
@@ -70,17 +82,19 @@ const NavBar = () => {
               <SheetContent>
                 <div className="p-5">
                   <div className="flex justify-center">
-                    <div className="my-10 flex flex-col justify-center items-center gap-2">
-                      <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" />
-                        <AvatarFallback>CO</AvatarFallback>
-                      </Avatar>
-                      <p className="text-center">Chijioke Obi</p>
-                      <Button>
-                        <CalendarDays className="mr-2" />
-                        Create Event
-                      </Button>
-                    </div>
+                    {status === "authenticated" && (
+                      <div className="my-10 flex flex-col justify-center items-center gap-2">
+                        <Avatar>
+                          <AvatarImage src="https://github.com/shadcn.png" />
+                          <AvatarFallback>CO</AvatarFallback>
+                        </Avatar>
+                        <p className="text-center">{session.user!.name}</p>
+                        <Button>
+                          <CalendarDays className="mr-2" />
+                          Create Event
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   <ul className="flex flex-col gap-4 text-center mb-5">
                     <li>
@@ -97,27 +111,35 @@ const NavBar = () => {
                     </li>
                   </ul>
                   <Separator />
-                  <div className="text-center flex flex-col gap-4 py-4">
-                    <Link href="#">My Profile</Link>
-                    <Link href="#">My Organisation</Link>
-                  </div>
+                  {status === "authenticated" && (
+                    <div className="text-center flex flex-col gap-4 py-4">
+                      <Link href="#">My Profile</Link>
+                      <Link href="#">My Organisation</Link>
+                    </div>
+                  )}
 
                   <ul className="flex justify-center gap-3 my-3 items-center">
-                    <li>
-                      <Link href="#">Sign In</Link>
-                    </li>
-                    <li>
-                      <Link href="#">Sign Up</Link>
-                    </li>
+                    {status === "unauthenticated" && (
+                      <li>
+                        <Link href="#">Sign In</Link>
+                      </li>
+                    )}
+                    {status === "unauthenticated" && (
+                      <li>
+                        <Link href="#">Sign Up</Link>
+                      </li>
+                    )}
 
-                    <li>
-                      <Link href="#">
-                        <Button>
-                          <LogOut className="mr-2" />
-                          Logout
-                        </Button>
-                      </Link>
-                    </li>
+                    {status === "authenticated" && (
+                      <li>
+                        <Link href="#">
+                          <Button>
+                            <LogOut className="mr-2" />
+                            Logout
+                          </Button>
+                        </Link>
+                      </li>
+                    )}
                   </ul>
                 </div>
               </SheetContent>
