@@ -40,10 +40,12 @@ const NavBar = () => {
           <ul className="hidden lg:flex justify-end items-center gap-3">
             {status === "authenticated" && (
               <li>
-                <Button>
-                  <CalendarDays className="mr-2" />
-                  Create Event
-                </Button>
+                <Link href="/create-event">
+                  <Button>
+                    <CalendarDays className="mr-2" />
+                    Create Event
+                  </Button>
+                </Link>
               </li>
             )}
             {status === "authenticated" && (
@@ -89,10 +91,12 @@ const NavBar = () => {
                           <AvatarFallback>CO</AvatarFallback>
                         </Avatar>
                         <p className="text-center">{session.user!.name}</p>
-                        <Button>
-                          <CalendarDays className="mr-2" />
-                          Create Event
-                        </Button>
+                        <Link href="/create-event">
+                          <Button>
+                            <CalendarDays className="mr-2" />
+                            Create Event
+                          </Button>
+                        </Link>
                       </div>
                     )}
                   </div>

@@ -12,15 +12,28 @@ export const FormDataSchema = z.object({
 });
 
 export const eventSchema = z.object({
-  organizerId: z.string(),
   name: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   startDate: z.date(),
-  endDate: z.string(),
+  endDate: z.string().optional(),
   venue: z.string(),
   address: z.string(),
   time: z.string(),
   duration: z.string(),
+  images: z
+    .array(
+      z.object({
+        key: z.string(),
+        name: z.string(),
+        serverData: z.object({
+          uploadedBy: z.string(),
+        }),
+        size: z.number(),
+        url: z.string(),
+      })
+    )
+    .optional(),
+
   city: z.string(),
   state: z.string().optional(),
   country: z.string(),
@@ -28,3 +41,13 @@ export const eventSchema = z.object({
   category: z.string(),
   eventType: z.enum(["ONLINE_EVENT", "VENUE_EVENT", "NOT_DECIDED"]),
 });
+
+interface ImageResponse {
+  key: string;
+  name: string;
+  serverData: {
+    uploadedBy: string;
+  };
+  size: number;
+  url: string;
+}

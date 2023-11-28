@@ -1,5 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState } from "react";
+import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
@@ -14,6 +16,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import "easymde/dist/easymde.min.css";
 import { timeIntervals, duration, countries } from "@/lib/constants";
 import { UploadDropzone } from "@/lib/uploadthing";
+import { useSession } from "next-auth/react";
 import {
   Select,
   SelectContent,
@@ -47,18 +50,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const FormSchema = z.object({
-  username: z.string({
-    required_error: "A username is required.",
-  }),
-  dob: z.date({
-    required_error: "A date of birth is required.",
-  }),
-  email: z.string({
-    required_error: "An email is required.",
-  }),
-});
-
 const languages = [
   { label: "English", value: "en" },
   { label: "French", value: "fr" },
@@ -69,6 +60,20 @@ const languages = [
   { label: "Japanese", value: "ja" },
   { label: "Korean", value: "ko" },
   { label: "Chinese", value: "zh" },
+];
+const event_types = [
+  {
+    label: "Online",
+    value: "ONLINE_EVENT",
+  },
+  {
+    label: "Venue",
+    value: "VENUE_EVENT",
+  },
+  {
+    label: "Not decided",
+    value: "NOT_DECIDED",
+  },
 ];
 
 interface ImageResponse {
@@ -82,13 +87,24 @@ interface ImageResponse {
 }
 
 export default function CreateEventForm() {
+  const { status, data: session } = useSession();
   const [images, setImages] = useState<ImageResponse[]>([]);
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof eventSchema>>({
     resolver: zodResolver(eventSchema),
   });
 
-  function onSubmit(data: z.infer<typeof eventSchema>) {
-    console.log(data);
+  if (status === "loading") return <div>Loading...</div>;
+
+  async function onSubmit(data: z.infer<typeof eventSchema>) {
+    try {
+      const res = await axios.post("/api/create-event", {
+        ...data,
+        organizerId: session?.user?.id,
+      });
+      console.log(res);
+    } catch (error) {}
+    //console.log(data);
   }
 
   return (
@@ -98,6 +114,44 @@ export default function CreateEventForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="pt-6">
+            <FormField
+              control={form.control}
+              name="eventType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Choose Event Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Event Type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {event_types &&
+                        event_types.map((eventType) => (
+                          <SelectItem
+                            key={eventType.value}
+                            value={eventType.value}
+                          >
+                            {eventType.label}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Choosing relevant event type helps to improve the
+                    discoverability of your event.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <Separator />
+          <div>
             <FormField
               control={form.control}
               name="name"
@@ -286,17 +340,25 @@ export default function CreateEventForm() {
               Upload colorful and vibrant images as the banner for your event!
               See how beautiful images help your event details page.
             </p>
-            <UploadDropzone
-              endpoint="imageUploader"
-              onClientUploadComplete={(res) => {
-                console.log(`onClientUploadComplete`, res);
-                setImages((prev) => [...prev, ...res]);
-              }}
-              onUploadBegin={() => {
-                console.log("upload begin");
-              }}
-              className="bg-slate-800 ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300"
+            <Controller
+              name="images"
+              control={form.control}
+              render={({ field }) => (
+                <UploadDropzone
+                  endpoint="imageUploader"
+                  onClientUploadComplete={(res) => {
+                    //console.log(`onClientUploadComplete`, res);
+                    form.setValue("images", [...images, ...res]);
+                    setImages((prev) => [...prev, ...res]);
+                  }}
+                  onUploadBegin={() => {
+                    console.log("upload begin");
+                  }}
+                  className="bg-slate-800 ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300"
+                />
+              )}
             />
+
             <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 overflow-hidden p-2 gap-2">
               {images.length > 0 &&
                 images.map((image) => (
@@ -345,7 +407,6 @@ export default function CreateEventForm() {
                     <FormControl>
                       <Input placeholder="Enter event venue" {...field} />
                     </FormControl>
-
                     <FormMessage />
                   </FormItem>
                 )}
@@ -410,7 +471,7 @@ export default function CreateEventForm() {
                                     value={country.label}
                                     key={country.value}
                                     onSelect={() => {
-                                      form.setValue("category", country.value);
+                                      form.setValue("country", country.value);
                                     }}
                                   >
                                     <Check
@@ -486,7 +547,9 @@ export default function CreateEventForm() {
             </div>
           </div>
           <div className="flex justify-center">
-            <Button className="px-6">Next</Button>
+            <Button className="px-6" type="submit">
+              Next
+            </Button>
           </div>
         </form>
       </Form>
