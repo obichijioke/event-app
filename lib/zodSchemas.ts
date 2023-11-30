@@ -42,6 +42,37 @@ export const eventSchema = z.object({
   eventType: z.enum(["ONLINE_EVENT", "VENUE_EVENT", "NOT_DECIDED"]),
 });
 
+export const eventSchemaServer = z.object({
+  name: z.string(),
+  description: z.string().optional(),
+  startDate: z.string(),
+  endDate: z.string().optional(),
+  venue: z.string(),
+  address: z.string(),
+  time: z.string(),
+  duration: z.string(),
+  images: z
+    .array(
+      z.object({
+        key: z.string(),
+        name: z.string(),
+        serverData: z.object({
+          uploadedBy: z.string(),
+        }),
+        size: z.number(),
+        url: z.string(),
+      })
+    )
+    .optional(),
+
+  city: z.string(),
+  state: z.string().optional(),
+  country: z.string(),
+  postcode: z.string(),
+  category: z.string(),
+  eventType: z.enum(["ONLINE_EVENT", "VENUE_EVENT", "NOT_DECIDED"]),
+});
+
 interface ImageResponse {
   key: string;
   name: string;

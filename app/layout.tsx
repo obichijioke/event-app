@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AuthProvider>
-        <body className={`${roboto.className} antialiased`}>
+        <body className={`${roboto.className} antialiased bg-gray-100`}>
           <NavBar />
           {children}
           <Footer />

@@ -97,10 +97,15 @@ export default function CreateEventForm() {
   if (status === "loading") return <div>Loading...</div>;
 
   async function onSubmit(data: z.infer<typeof eventSchema>) {
+    // const formData = new FormData();
+    // for (var key in data) {
+    //   formData.append(key, data[key]);
+    // }
+    // formData.append("organizerId", session?.user?.id);
     try {
       const res = await axios.post("/api/create-event", {
         ...data,
-        organizerId: session?.user?.id,
+        organizerId: session?.user?.id
       });
       console.log(res);
     } catch (error) {}
@@ -248,7 +253,7 @@ export default function CreateEventForm() {
                             selected={field.value}
                             onSelect={field.onChange}
                             disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
+                              date < new Date() || date < new Date("1900-01-01")
                             }
                             initialFocus
                           />
@@ -373,21 +378,28 @@ export default function CreateEventForm() {
           </div>
           <Separator />
           <div>
-            <p className="font-semibold text-gray-600">
-              Please describe your event.
-            </p>
-            <p className="text-xs text-gray-500 my-3">
-              Write a few words below to describe your event and provide any
+          <div>
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Please describe your event. </FormLabel>
+                  <FormDescription>
+                  Write a few words below to describe your event and provide any
               extra information such as schedules, itinerary or any special
               instructions required to attend your event.
-            </p>
-            <Controller
-              name="description"
-              control={form.control}
-              render={({ field }) => (
-                <SimpleMDE placeholder="Event description" {...field} />
+                  </FormDescription>
+                  <FormControl>
+                    <SimpleMDE placeholder="Event description" {...field} />
+                  </FormControl>
+                  
+                  <FormMessage />
+                </FormItem>
               )}
             />
+          </div>
+            
           </div>
           <div>
             <p className="font-semibold text-gray-600">
