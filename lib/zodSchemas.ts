@@ -73,12 +73,13 @@ export const eventSchemaServer = z.object({
   eventType: z.enum(["ONLINE_EVENT", "VENUE_EVENT", "NOT_DECIDED"]),
 });
 
-interface ImageResponse {
-  key: string;
-  name: string;
-  serverData: {
-    uploadedBy: string;
-  };
-  size: number;
-  url: string;
-}
+export const ticketSchema = z.object({
+  name: z.string(),
+  eventId: z.number(),
+  price: z.number(), // Floats are represented as numbers in Zod
+  description: z.string(),
+  seatNumber: z.string().optional(),
+  limitPerUser: z.number().optional(),
+  type: z.enum(["SINGLE_TICKET", "GROUP_TICKET"]),
+  availability: z.string().optional(),
+});

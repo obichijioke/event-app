@@ -98,13 +98,22 @@ model Event {
   reviews     Review[]
 }
 
+enum TicketType {
+  SINGLE_TICKET
+  GROUP_TICKET
+}
+
 model Ticket {
   id           Int     @id @default(autoincrement())
+  name         String
   eventId      Int
   price        Float
+  description  String
   seatNumber   String?
-  type         String
-  availability String
+  limitPerUser Int?
+  variation String?
+  type         TicketType
+  availability String?
   event        Event   @relation(fields: [eventId], references: [id])
   sales        Sale[]
 }

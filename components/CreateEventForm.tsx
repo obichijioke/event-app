@@ -50,16 +50,39 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const languages = [
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
+const categories = [
+  {
+    label: "Music",
+    value: "Music",
+  },
+  {
+    label: "Theater and Performing Arts",
+    value: "Theater and Performing Arts",
+  },
+  {
+    label: "Food and Drink",
+    value: "Food and Drink",
+  },
+  {
+    label: "Sports and Fitness",
+    value: "Sports and Fitness",
+  },
+  {
+    label: "Business and Professional",
+    value: "Business and Professional",
+  },
+  {
+    label: "Health and Wellness",
+    value: "Health and Wellness",
+  },
+  {
+    label: "Nightlife",
+    value: "Nightlife",
+  },
+  {
+    label: "Family and Kids' Events",
+    value: "Family and Kids' Events",
+  },
 ];
 const event_types = [
   {
@@ -105,7 +128,7 @@ export default function CreateEventForm() {
     try {
       const res = await axios.post("/api/create-event", {
         ...data,
-        organizerId: session?.user?.id
+        organizerId: session?.user?.id,
       });
       console.log(res);
     } catch (error) {}
@@ -193,8 +216,8 @@ export default function CreateEventForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {languages &&
-                        languages.map((category) => (
+                      {categories &&
+                        categories.map((category) => (
                           <SelectItem
                             key={category.value}
                             value={category.value}
@@ -378,28 +401,27 @@ export default function CreateEventForm() {
           </div>
           <Separator />
           <div>
-          <div>
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Please describe your event. </FormLabel>
-                  <FormDescription>
-                  Write a few words below to describe your event and provide any
-              extra information such as schedules, itinerary or any special
-              instructions required to attend your event.
-                  </FormDescription>
-                  <FormControl>
-                    <SimpleMDE placeholder="Event description" {...field} />
-                  </FormControl>
-                  
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-            
+            <div>
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Please describe your event. </FormLabel>
+                    <FormDescription>
+                      Write a few words below to describe your event and provide
+                      any extra information such as schedules, itinerary or any
+                      special instructions required to attend your event.
+                    </FormDescription>
+                    <FormControl>
+                      <SimpleMDE placeholder="Event description" {...field} />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           <div>
             <p className="font-semibold text-gray-600">
