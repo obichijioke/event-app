@@ -75,11 +75,11 @@ export const eventSchemaServer = z.object({
 
 export const ticketSchema = z.object({
   name: z.string(),
-  eventId: z.number(),
-  price: z.number(), // Floats are represented as numbers in Zod
+  eventId: z.number().optional(),
+  price: z.coerce.number(), // Floats are represented as numbers in Zod
   description: z.string(),
   seatNumber: z.string().optional(),
   limitPerUser: z.number().optional(),
-  type: z.enum(["SINGLE_TICKET", "GROUP_TICKET"]),
+  type: z.enum(["SINGLE_TICKET", "GROUP_TICKET"]).optional(),
   availability: z.string().optional(),
 });
